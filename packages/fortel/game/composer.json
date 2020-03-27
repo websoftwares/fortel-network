@@ -1,0 +1,28 @@
+{
+    "name": "fortel/game",
+    "description": "Play a numbers game.",
+    "authors": [
+        {
+            "name": "Boris Verhaaff",
+            "email": "boris@websoftwar.es"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fortel\\Game\\Providers\\PlayGameServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Fortel\\Game\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fortel\\Game\\Tests\\": "tests/"
+        }
+    }
+}
