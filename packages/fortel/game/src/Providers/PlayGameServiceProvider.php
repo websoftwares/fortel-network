@@ -2,7 +2,7 @@
 
 namespace Fortel\Game\Providers;
 
-use Fortel\Game\Commands\PlayGameCommand;
+use Fortel\Game\Console\Commands\PlayGameCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**

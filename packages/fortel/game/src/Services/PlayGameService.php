@@ -6,6 +6,7 @@ namespace Fortel\Game\Services;
 
 use Fortel\Game\Models\PlayGameModel;
 use Fortel\Game\Models\PlayGameModelInterface;
+use InvalidArgumentException;
 
 /**
  * @package Fortel\Game\Services
@@ -14,6 +15,7 @@ class PlayGameService implements PlayGameServiceInterface
 {
     /** @var array */
     private const PLAY_RETURN_VALUE_MAP = [0 => 'Lose', 1 => 'Win'];
+    private const ERROR_TEAMS_NOT_EQUAL = 'Each team must have equal amount of players, team A: %s , team B: %s';
 
     /**
      * Returns
@@ -26,8 +28,19 @@ class PlayGameService implements PlayGameServiceInterface
      */
     public function play(string $teamA, string $teamB): string
     {
+        $arrTeamA = $this->toArray($teamA);
+        $arrTeamB = $this->toArray($teamB);
+        $numberOfPlayersTeamA = \count($arrTeamA);
+        $numberOfPlayersTeamB = \count($arrTeamB);
+
+        if ($numberOfPlayersTeamA !== $numberOfPlayersTeamB) {
+            throw new InvalidArgumentException(
+                sprintf(self::ERROR_TEAMS_NOT_EQUAL, $numberOfPlayersTeamA, $numberOfPlayersTeamB)
+            );
+        }
+
         /** @var PlayGameModelInterface $playModel */
-        $playModel = new PlayGameModel($this->toArray($teamA), $this->toArray($teamB));
+        $playModel = new PlayGameModel($arrTeamA, $arrTeamB);
         $playModel->play();
         $returnValue = (int)$playModel->hasTeamAWon();
 

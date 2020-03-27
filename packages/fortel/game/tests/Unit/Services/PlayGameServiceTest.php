@@ -3,6 +3,7 @@
 namespace Fortel\Game\Tests\Unit\Services;
 
 use Fortel\Game\Services\PlayGameService;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -10,6 +11,18 @@ use PHPUnit\Framework\TestCase;
  */
 class PlayGameServiceTest extends TestCase
 {
+
+    /**
+     * @var PlayGameService
+     */
+    private PlayGameService $service;
+
+    protected function setUp(): void
+    {
+        $this->service = new PlayGameService();
+        parent::setUp();
+    }
+
     /**
      * @dataProvider teamsDataProvider
      * @param string $teamA
@@ -18,9 +31,23 @@ class PlayGameServiceTest extends TestCase
      */
     public function testPlayUnit(string $teamA, string $teamB, string $expected): void
     {
-        $service = new PlayGameService();
-        $actual = $service->play($teamA, $teamB);
+        $actual = $this->service->play($teamA, $teamB);
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @dataProvider teamsDataFailsProvider
+     * @param string $teamA
+     * @param string $teamB
+     * @param string $expected
+     */
+    public function testPlayUnitFails(string $teamA, string $teamB, string $expected): void
+    {
+        try {
+            $this->service->play($teamA, $teamB);
+        } catch (InvalidArgumentException $err) {
+            $this->assertEquals($expected, $err->getMessage());
+        }
     }
 
     /**
@@ -34,6 +61,21 @@ class PlayGameServiceTest extends TestCase
             ],
             [
                 '1', '1', 'Lose'
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function teamsDataFailsProvider(): array
+    {
+        return [
+            [
+                '1', '2,1', 'Each team must have equal amount of players, team A: 1 , team B: 2'
+            ],
+            [
+                '1,2', '1', 'Each team must have equal amount of players, team A: 2 , team B: 1'
             ],
         ];
     }
